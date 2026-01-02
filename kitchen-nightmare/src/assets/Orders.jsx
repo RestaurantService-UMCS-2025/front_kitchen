@@ -1,3 +1,4 @@
+import Button from './Button';
 function Orders() {
     const orders = [
         {table_id: 1, order_name: 'Borgir'},
@@ -7,12 +8,12 @@ function Orders() {
 
 
     return (<div>
-            {orders.map((order, index) =>
-                (<div className="order">
+            {orders.map((order) =>
+                (<div className="order" key={order.table_id}>
                     <p>{order.order_name}</p>
                     <p>{order.table_id}</p>
-                <button>Zamowienie zrobione</button>
-                <button>Pokaż stolik</button></div>))}
+                <Button buttonText="Zamówienie zrobione"/>
+                <Button buttonText="Pokaż stolik"/></div>))}
         </div>
     );
 }

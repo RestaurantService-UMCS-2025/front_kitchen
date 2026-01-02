@@ -1,5 +1,4 @@
-import Orders from './assets/Orders';
-import GeneralComponent from "./assets/GeneralComponent.jsx";
+import GeneralComponent from "./assets/GeneralComponent";
 function App() {
 
 
