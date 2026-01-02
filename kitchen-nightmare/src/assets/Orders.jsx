@@ -9,11 +9,12 @@ function Orders() {
 
     return (<div>
             {orders.map((order) =>
-                (<div className="order" key={order.table_id}>
+                (<div className="order" key={order.table_id} style={{fontFamily: 'Helvetica', fontWeight: 'bold'}} >
                     <p>{order.order_name}</p>
                     <p>{order.table_id}</p>
-                <Button buttonText="Zamówienie zrobione"/>
-                <Button buttonText="Pokaż stolik"/></div>))}
+                <Button buttonText="Zamówienie zrobione" className='button-order'/>
+                <Button buttonText="Pokaż stolik" className='button-order'/>
+                </div>))}
         </div>
     );
 }

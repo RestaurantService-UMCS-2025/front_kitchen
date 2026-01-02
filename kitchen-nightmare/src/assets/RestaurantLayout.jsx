@@ -18,10 +18,12 @@ function RestaurantLayout() {
                     <Draggable
                         key={table.table_id}
                         nodeRef={nodeRef}
+
                     >
-                        <div className="table" ref={nodeRef} style={{ border: '1px solid black', padding: '10px', width: '100px', cursor: 'move' }}>
+                        <div className="table" ref={nodeRef} style={{ border: '1px solid black', padding: '10px', width: '130px',
+                            cursor: 'move', color: 'white', fontSize: '25px',fontFamily: 'Helvetica', fontWeight: 'bold' }} >
                             <p>Stolik {table.table_id}</p>
-                            <Button buttonText="Pokaż zamówienia"/>
+                            <Button buttonText="Pokaż zamówienia" className='button-table'/>
                         </div>
                     </Draggable>
                 );

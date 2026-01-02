@@ -1,7 +1,6 @@
-
-const Button = ({ buttonText, onClick, disabled }) => {
+function Button({ buttonText, className }) {
     return (
-        <button className="custom-button" onClick={onClick} disabled={disabled}>
+        <button className={className}>
             {buttonText}
         </button>
     );
