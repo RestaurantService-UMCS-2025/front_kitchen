@@ -1,6 +1,7 @@
-import { useState } from 'react';
 import Orders from "./Orders.jsx";
 import RestaurantLayout from "./RestaurantLayout.jsx";
+import { useState } from 'react';
+
 
 function GeneralComponent() {
     const [selectedTableId, setSelectedTableId] = useState(null);
