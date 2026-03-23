@@ -1,4 +1,4 @@
-import GeneralComponent from "./assets/GeneralComponent";
+import GeneralComponent from "./assets/GeneralComponent.jsx";
 function App() {
 
 
