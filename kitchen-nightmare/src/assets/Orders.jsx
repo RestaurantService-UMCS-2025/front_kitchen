@@ -8,16 +8,25 @@ function Orders({ selectedTableId, onSelectTable }) {
         fetch('http://localhost:5077/api/Orders/orders')
             .then(response => response.json())
             .then(json => {
-                console.log(json)
                 setOrders(json)
             })
             .catch(error => console.error(error));
     }, []);
 
     const removeOrder = (id) => {
-        // TODO tutaj najpierw pójdzie end point do zmiany statustu danego zamówienia, dopiero wtedy aktualizacja UI
-        setOrders(prev => prev.filter(o => o.id !== id));
-        if (selectedTableId === id) onSelectTable(null);
+        fetch(`http://localhost:5077/api/Orders/orders/${id}/status`, {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ stage: 2 }) // 2 to jest Paid
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Błąd przy aktualizacji statusu");
+                setOrders(prev => prev.filter(o => o.id !== id));
+                if (selectedTableId === id) onSelectTable(null);
+            })
+            .catch(err => console.error(err));
     };
 
     return (
