@@ -1,12 +1,12 @@
 import Button from './Button';
 import { useState, useEffect } from 'react';
+import {getAllOrders, setOrderStatus} from "../api/ordersApi.jsx";
 
 function Orders({ selectedTableId, onSelectTable }) {
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5077/api/Orders/orders')
-            .then(response => response.json())
+            getAllOrders()
             .then(json => {
                 setOrders(json)
             })
@@ -14,15 +14,8 @@ function Orders({ selectedTableId, onSelectTable }) {
     }, []);
 
     const removeOrder = (id) => {
-        fetch(`http://localhost:5077/api/Orders/orders/${id}/status`, {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ stage: 2 }) // 2 to jest Paid
-        })
-            .then(res => {
-                if (!res.ok) throw new Error("Błąd przy aktualizacji statusu");
+        setOrderStatus(id, 2)
+            .then(() => {
                 setOrders(prev => prev.filter(o => o.id !== id));
                 if (selectedTableId === id) onSelectTable(null);
             })
