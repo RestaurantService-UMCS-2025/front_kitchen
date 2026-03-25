@@ -19,7 +19,7 @@ function ProductList() {
             .catch(error => console.error(error))
     }, []);
 
-    const toggleProduct = (id) => {
+    const toggleProduct = (id,available) => {
         fetch(`http://localhost:5077/api/Menu/available`, {
             method: "PATCH",
             headers: {
@@ -27,13 +27,13 @@ function ProductList() {
             },
             body: JSON.stringify({
                 id: id,
-                mode: false
+                mode: available
             })
         }).then(() => {
             setProducts(prev =>
-                prev.map(p => p.id === id ? { ...p, checked: !p.checked } : p)
+                prev.map(p => p.id === id ? { ...p, available: !p.available } : p)
             );
-        })
+        }).catch(error => console.error(error))
     };
 
     return (
@@ -42,13 +42,12 @@ function ProductList() {
             {products.map(product => (
                 <div
                     key={product.id}
-                    //onClick={() => toggleProduct(product.id)}
                     className={`product-item ${product.available ? 'checked' : ''}`}
                 >
                     <input
                         type="checkbox"
-                        checked={product.available}
-                        onChange={() => toggleProduct(product.id)}
+                        checked={!product.available}
+                        onChange={() => toggleProduct(product.id,!product.available)}
                         onClick={e => e.stopPropagation()}
                     />
                     {product.dishName}
