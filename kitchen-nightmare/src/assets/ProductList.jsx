@@ -42,11 +42,11 @@ function ProductList() {
             {products.map(product => (
                 <div
                     key={product.id}
-                    className={`product-item ${product.available ? 'checked' : ''}`}
+                    className={`product-item ${!product.available ? 'checked' : ''}`}
                 >
                     <input
                         type="checkbox"
-                        checked={!product.available}
+                        checked={product.available}
                         onChange={() => toggleProduct(product.id,!product.available)}
                         onClick={e => e.stopPropagation()}
                     />
