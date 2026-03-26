@@ -21,6 +21,7 @@ function ProductList() {
             <div className="product-list-header" onClick={() => setIsOpen(!isOpen)}>
                 <h2>Lista produktów</h2>
                 <span>{isOpen ? '▲' : '▼'}</span>
+
             </div>
             {isOpen && (
                 <div className="product-list-body">

@@ -15,6 +15,7 @@ function GeneralComponent() {
             </div>
 
             <div className="layout-column">
+
                 <ProductList />
                 <RestaurantLayout selectedTableId={selectedTableId} onSelectTable={setSelectedTableId} />
             </div>
