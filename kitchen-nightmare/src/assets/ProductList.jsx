@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {getAllProducts, setProductAvailable} from "../api/productsApi.jsx";
-
+//test branch merge
 function ProductList() {
     const [products, setProducts] = useState([]);
 
