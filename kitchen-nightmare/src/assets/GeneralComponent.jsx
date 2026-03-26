@@ -13,10 +13,9 @@ function GeneralComponent() {
             <div className="orders-column">
                 <Orders selectedTableId={selectedTableId} onSelectTable={setSelectedTableId} />
             </div>
-            <div className="products-column">
-                <ProductList />
-            </div>
+
             <div className="layout-column">
+                <ProductList />
                 <RestaurantLayout selectedTableId={selectedTableId} onSelectTable={setSelectedTableId} />
             </div>
         </div>
