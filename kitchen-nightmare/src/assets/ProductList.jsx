@@ -1,13 +1,18 @@
 import {useEffect, useState} from 'react';
 import {getAllProducts, setProductAvailable} from "../api/productsApi.jsx";
-//test branch merge
+
+let productsCache = null;
 function ProductList() {
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState(productsCache || []);
 
     useEffect(() => {
+        if (productsCache) {
+            return;
+        }
         getAllProducts()
             .then(json => {
                 setProducts(json)
+                productsCache = json
             })
             .catch(error => console.error(error))
     }, []);

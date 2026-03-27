@@ -2,13 +2,18 @@ import Button from './Button';
 import { useState, useEffect } from 'react';
 import {getAllOrders, setOrderStatus} from "../api/ordersApi.jsx";
 
+let ordersCache = null;
 function Orders({ selectedTableId, onSelectTable }) {
-    const [orders, setOrders] = useState([]);
+    const [orders, setOrders] = useState(ordersCache || []);
 
     useEffect(() => {
-            getAllOrders()
+        if (ordersCache) {
+            return;
+        }
+        getAllOrders()
             .then(json => {
                 setOrders(json)
+                ordersCache = json
             })
             .catch(error => console.error(error));
     }, []);
@@ -16,7 +21,9 @@ function Orders({ selectedTableId, onSelectTable }) {
     const removeOrder = (id) => {
         setOrderStatus(id, 2)
             .then(() => {
-                setOrders(prev => prev.filter(o => o.id !== id));
+                const updated = prev => prev.filter(o => o.id !== id)
+                ordersCache = updated
+                setOrders(updated);
                 if (selectedTableId === id) onSelectTable(null);
             })
             .catch(err => console.error(err));
