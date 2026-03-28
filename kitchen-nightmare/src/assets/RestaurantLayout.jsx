@@ -1,4 +1,3 @@
-import Button from "./Button.jsx";
 import Draggable from "react-draggable";
 import { useRef, useState, useEffect } from "react";
 
@@ -40,7 +39,6 @@ function TableItem({ table, isSelected, onSelectTable, selectedTableId, onMove }
                 }}
             >
                 <p>Stolik {table.table_id}</p>
-                <Button buttonText="Pokaż zamówienia" className="button-table" />
             </div>
         </Draggable>
     );
