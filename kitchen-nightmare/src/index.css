@@ -39,9 +39,10 @@
     background-color: #5F99AE;
 }
 .order-wrapper{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    columns : auto;
+    column-width: 200px;
+    column-gap: 10px;
+    padding: 10px;
 }
 
 .button-order {
@@ -79,7 +80,7 @@
     border-radius: 10px;
     background-color: #76d2db;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: normal;
     color: white;
     transition: color 0.2s, background-color 0.2s;
 }

@@ -55,13 +55,13 @@ function Orders({ selectedTableId, onSelectTable }) {
                         }
                         style={{
                             fontFamily: "Helvetica",
-                            fontWeight: "bold",
+                            fontWeight: "normal",
                             backgroundColor: selectedTableId === order.tableId ? "#ffe066" : "",
                             cursor: "pointer",
                             transition: "background-color 0.2s",
                         }}
                     >
-                        <p>Płatność: {order.billAmount}</p>
+                        <p>Płatność: {order.billAmount} zł</p>
 
                         {order.items && order.items.length > 0 && (
                             <ul>
