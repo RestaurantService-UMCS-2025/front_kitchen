@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
 import {getAllProducts, setProductAvailable} from "../api/productsApi.jsx";
-import {getAllOrders} from "../api/ordersApi.jsx";
 import Button from "./Button.jsx";
 
 let productsCache = null;
@@ -22,7 +21,7 @@ function ProductList() {
     const refreshProducts =() =>  {
         productsCache = null
 
-        getAllOrders()
+        getAllProducts()
             .then(json => {
                 setProducts(json)
                 productsCache = json
