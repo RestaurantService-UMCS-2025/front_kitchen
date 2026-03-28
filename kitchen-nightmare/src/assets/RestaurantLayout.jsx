@@ -1,5 +1,6 @@
 import Draggable from "react-draggable";
 import { useRef, useState, useEffect } from "react";
+import Button from "./Button.jsx";
 
 function TableItem({ table, isSelected, onSelectTable, selectedTableId, onMove }) {
     const nodeRef = useRef(null);
@@ -85,7 +86,10 @@ function RestaurantLayout({ selectedTableId, onSelectTable }) {
 
     return (
         <div style={{ position: "relative", height: "500px" }}>
-            <button onClick={addTable}>Dodaj stolik</button>
+            <Button className="button-add-table"
+                    buttonText="Dodaj stolik"
+                    onClick={addTable}>
+            </Button>
 
             {tables.map(table => (
                 <TableItem

@@ -43,9 +43,10 @@ function Orders({ selectedTableId, onSelectTable }) {
     };
 
     return (
-        <div className="order-wrapper">
+        <div>
+            <Button buttonText="Odśwież" className="button-refresh" onClick={refreshOrders}>Click</Button>
+            <div className="order-wrapper">
             <div>
-                <button onClick={refreshOrders}>Click</button>
                 {orders.map((order) => (
                     order.items && order.items.length > 0 ? (
                         <div
@@ -87,6 +88,7 @@ function Orders({ selectedTableId, onSelectTable }) {
                     ) : null
                 ))}
             </div>
+        </div>
         </div>
     );
 }
