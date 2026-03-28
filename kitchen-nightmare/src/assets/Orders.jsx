@@ -1,11 +1,14 @@
 import Button from './Button';
 import { useState, useEffect } from 'react';
 import { getAllOrders, setOrderStatus } from "../api/ordersApi.jsx";
+import {getRandomColor} from "./ColorRandomizer.jsx";
 
 let ordersCache = null;
 
 function Orders({ selectedTableId, onSelectTable }) {
     const [orders, setOrders] = useState(ordersCache || []);
+    const [orderColors, setOrderColors] = useState({});
+
 
     useEffect(() => {
         if (ordersCache) {
@@ -18,6 +21,15 @@ function Orders({ selectedTableId, onSelectTable }) {
             })
             .catch(error => console.error(error));
     }, []);
+    useEffect(() => {
+        if (orders.length > 0) {
+            const colors = {};
+            orders.forEach(order => {
+                colors[order.id] = getRandomColor();
+            });
+            setOrderColors(colors);
+        }
+    }, [orders.length]);
 
     const removeOrder = (id) => {
         setOrderStatus(id, 2)
@@ -58,7 +70,7 @@ function Orders({ selectedTableId, onSelectTable }) {
                             style={{
                                 fontFamily: "Helvetica",
                                 fontWeight: "normal",
-                                backgroundColor: selectedTableId === order.tableId ? "#ffe066" : "",
+                                backgroundColor: selectedTableId === order.tableId ? "#ffe066" : orderColors[order.id],
                                 cursor: "pointer",
                                 transition: "background-color 0.2s",
                             }}
@@ -68,8 +80,9 @@ function Orders({ selectedTableId, onSelectTable }) {
                             {order.items && order.items.length > 0 && (
                                 <ul>
                                     {order.items.map((item) => (
-                                        <li key={item.orderItemId}>
-                                            {item.menuItemName} x {item.quantity}
+                                        <li key={item.orderItemId} style={{display:"flex", justifyContent:"space-between",alignItems:"center",gap:"5px"}}>
+                                            <span>{item.menuItemName}</span>
+                                            <span>  x{item.quantity}</span>
                                         </li>
                                     ))}
                                 </ul>
