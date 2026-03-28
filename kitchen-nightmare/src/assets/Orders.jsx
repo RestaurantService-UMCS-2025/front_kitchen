@@ -29,8 +29,22 @@ function Orders({ selectedTableId, onSelectTable }) {
             .catch(err => console.error(err));
     };
 
+    const refreshOrders =() =>  {
+        ordersCache = null
+
+        getAllOrders()
+            .then(json => {
+                setOrders(json)
+                ordersCache = json
+            })
+            .catch(error => console.error(error));
+    }
+
     return (
         <div>
+            <button
+            onClick={refreshOrders}
+            >Click</button>
             {orders.map((order) => (
                 order.items && order.items.length > 0 ? (
                     <div
