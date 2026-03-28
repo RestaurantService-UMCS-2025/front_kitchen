@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {getAllProducts, setProductAvailable} from "../api/productsApi.jsx";
 import {getAllOrders} from "../api/ordersApi.jsx";
+import Button from "./Button.jsx";
 
 let productsCache = null;
 function ProductList() {
@@ -40,9 +41,11 @@ function ProductList() {
 
     return (
         <div style={{ fontFamily: 'Helvetica', padding: '10px' }}>
-            <button
-                onClick={refreshProducts}
-            >Click</button>
+            <Button buttonText="Odśwież"
+                    className="button-refresh"
+                    onClick={refreshProducts}>
+            </Button>
+
             <h2>Lista produktów</h2>
             {products.map(product => (
                 <div
