@@ -38,6 +38,11 @@
     display: inline-block;
     background-color: #5F99AE;
 }
+.order-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
 
 .button-order {
     background-color: #336D82;

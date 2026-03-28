@@ -30,7 +30,7 @@ function Orders({ selectedTableId, onSelectTable }) {
     };
 
     return (
-        <div>
+        <div className="order-wrapper">
             {orders.map((order) => (
                 order.items && order.items.length > 0 ? (
                     <div
