@@ -41,6 +41,7 @@ function Orders({ selectedTableId, onSelectTable }) {
     }
 
     return (
+        <div className="order-wrapper">
         <div>
             <button
             onClick={refreshOrders}
