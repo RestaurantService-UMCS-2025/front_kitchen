@@ -1,3 +1,4 @@
+
 .container {
     display: flex;
     flex-direction: row;
@@ -33,9 +34,10 @@
     border-radius: 10px;
     padding: 10px;
     margin: 5px;
-    text-align: center;
+    text-align: left;
     max-width: 200px;
     display: inline-block;
+    color: #fffdfd;
     background-color: #5F99AE;
 }
 .order-wrapper{
