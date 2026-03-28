@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import {getAllProducts, setProductAvailable} from "../api/productsApi.jsx";
+import {getAllOrders} from "../api/ordersApi.jsx";
 
 let productsCache = null;
 function ProductList() {
@@ -17,6 +18,16 @@ function ProductList() {
             .catch(error => console.error(error))
     }, []);
 
+    const refreshProducts =() =>  {
+        productsCache = null
+
+        getAllOrders()
+            .then(json => {
+                setProducts(json)
+                productsCache = json
+            })
+            .catch(error => console.error(error));
+    }
     const toggleProduct = (id,available) => {
         setProductAvailable(id,available)
         .then(() => {
@@ -29,6 +40,9 @@ function ProductList() {
 
     return (
         <div style={{ fontFamily: 'Helvetica', padding: '10px' }}>
+            <button
+                onClick={refreshProducts}
+            >Click</button>
             <h2>Lista produktów</h2>
             {products.map(product => (
                 <div
