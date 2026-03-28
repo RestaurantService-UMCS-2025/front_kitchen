@@ -31,9 +31,13 @@ function ProductList() {
     const toggleProduct = (id,available) => {
         setProductAvailable(id,available)
         .then(() => {
-            setProducts(prev =>
-                prev.map(p => p.id === id ? { ...p, available: available } : p)
-            );
+            setProducts(prev => {
+                const updated = prev.map(p =>
+                    p.id === id ? { ...p, available: available } : p
+                );
+                productsCache = updated;
+                return updated;
+            });
         }).catch(error => console.error(error))
         console.log(products)
     };
