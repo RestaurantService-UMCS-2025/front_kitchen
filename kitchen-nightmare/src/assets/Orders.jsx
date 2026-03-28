@@ -81,6 +81,7 @@ function Orders({ selectedTableId, onSelectTable }) {
                                 removeOrder(order.id);
                             }}
                         />
+                        <Button buttonText="Pokaż stolik" className="button-order" />
                     </div>
                 ) : null
             ))}
