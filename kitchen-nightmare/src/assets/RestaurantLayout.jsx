@@ -90,6 +90,10 @@ function RestaurantLayout({ selectedTableId, onSelectTable }) {
                     buttonText="Dodaj stolik"
                     onClick={addTable}>
             </Button>
+            <Button className="button-remove-table"
+                    buttonText="Usuń stolik">
+            </Button>
+
 
             {tables.map(table => (
                 <TableItem
