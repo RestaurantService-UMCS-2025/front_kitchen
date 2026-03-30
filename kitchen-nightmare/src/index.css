@@ -72,6 +72,14 @@
     cursor: pointer;
     margin: 5px 2px;
 }
+.button-remove-table{
+    background-color: #9b0f06;
+    color: #eed9b9;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px 2px;
+}
 .table{
     border: 1px solid hsl(0, 1%, 44%);
     border-radius: 25px;
