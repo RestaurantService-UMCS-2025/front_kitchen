@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {login} from "../api/loginApi.jsx";
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -7,9 +8,10 @@ function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        if (username === 'admin' && password === 'admin123') {
-            navigate('/app');
+    const handleLogin = async () => {
+        const success = await login(username, password);
+        if (success) {
+            navigate('/app')
         } else {
             setError('Nieprawidłowy login lub hasło');
         }
