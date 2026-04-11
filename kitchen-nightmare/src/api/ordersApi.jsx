@@ -1,8 +1,17 @@
+import {getTokenFromCookies} from "./loginApi.jsx";
+
 const BASE_URL = 'http://localhost:5077/api/Orders';
 
 export const getAllOrders = async () => {
-    const response = await fetch(`${BASE_URL}/orders`);
-
+    let token = getTokenFromCookies()
+    console.log(token)
+    const response = await fetch(`${BASE_URL}/orders`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
     if (!response.ok) {
         throw new Error('Błąd pobierania produktów');
     }
