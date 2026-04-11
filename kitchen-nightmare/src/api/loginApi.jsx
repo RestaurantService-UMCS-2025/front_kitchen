@@ -14,11 +14,15 @@ export const login = async (login,password) => {
 
     if(response.ok) {
         const data = await response.json();
-        console.log(`Token from login ${data.token}`)
         document.cookie = `token=${data.token}`;
 
         return true
     }
 
     return false
+}
+export const getTokenFromCookies = () => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; token=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
 }

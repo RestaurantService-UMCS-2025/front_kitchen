@@ -39,7 +39,6 @@ function ProductList() {
                 return updated;
             });
         }).catch(error => console.error(error))
-        console.log(products)
     };
 
     return (
