@@ -6,6 +6,15 @@ import ProductList from "./ProductList.jsx";
 function GeneralComponent() {
     const [selectedTableId, setSelectedTableId] = useState(null);
     const [activeTab, setActiveTab] = useState('orders');
+    const [seenOrders, setSeenOrders] = useState(new Set());
+
+    const markAsSeen = (id) => {
+        if (Array.isArray(id)) {
+            setSeenOrders(prev => new Set([...prev, ...id]));
+        } else {
+            setSeenOrders(prev => new Set([...prev, id]));
+        }
+    };
 
     return (
         <div className="container">
@@ -25,7 +34,12 @@ function GeneralComponent() {
                     </button>
                 </div>
                 {activeTab === 'orders'
-                    ? <Orders selectedTableId={selectedTableId} onSelectTable={setSelectedTableId} />
+                    ? <Orders
+                        selectedTableId={selectedTableId}
+                        onSelectTable={setSelectedTableId}
+                        seenOrders={seenOrders}
+                        markAsSeen={markAsSeen}
+                    />
                     : <ProductList />
                 }
             </div>
