@@ -5,19 +5,19 @@ import {getRandomColor} from "./ColorRandomizer.jsx";
 
 let ordersCache = null;
 
-function Orders({ selectedTableId, onSelectTable }) {
+function Orders({ selectedTableId, onSelectTable,seenOrders,markAsSeen }) {
     const [orders, setOrders] = useState(ordersCache || []);
     const [orderColors, setOrderColors] = useState({});
-
-
     useEffect(() => {
         if (ordersCache) {
+            markAsSeen(ordersCache.map(o => o.id));
             return;
         }
         getAllOrders()
             .then(json => {
                 setOrders(json);
                 ordersCache = json;
+                markAsSeen(json.map(o => o.id));
             })
             .catch(error => console.error(error));
     }, []);
@@ -64,9 +64,10 @@ function Orders({ selectedTableId, onSelectTable }) {
                         <div
                             key={order.id}
                             className="order"
-                            onClick={() =>
-                                onSelectTable(selectedTableId === order.tableId ? null : order.tableId)
-                            }
+                            onClick={() => {
+                                markAsSeen(order.id);
+                                onSelectTable(selectedTableId === order.tableId ? null : order.tableId);
+                            }}
                             style={{
                                 fontFamily: "Helvetica",
                                 fontWeight: "normal",
@@ -75,6 +76,9 @@ function Orders({ selectedTableId, onSelectTable }) {
                                 transition: "background-color 0.2s",
                             }}
                         >
+                            {!seenOrders.has(order.id) && (
+                                <div className="order-new-dot" />
+                            )}
                             <p>Płatność: {order.billAmount} zł</p>
 
                             {order.items && order.items.length > 0 && (
