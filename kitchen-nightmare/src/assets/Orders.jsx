@@ -6,9 +6,9 @@ import {getRandomColor} from "./ColorRandomizer.jsx";
 let ordersCache = null;
 import * as signalR from '@microsoft/signalr';
 
-function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen }) {
+function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderColors, setOrderColors}) {
     const [orders, setOrders] = useState(ordersCache || []);
-    const [orderColors, setOrderColors] = useState({});
+    //const [orderColors, setOrderColors] = useState({});
 
     useEffect(() => {
         if (ordersCache) {
@@ -26,13 +26,19 @@ function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen }) {
 
     useEffect(() => {
         if (orders.length > 0) {
-            const colors = {};
-            orders.forEach(order => {
-                colors[order.id] = getRandomColor();
+            setOrderColors(prevColors => {
+                const updatedColors = { ...prevColors };
+
+                orders.forEach(order => {
+                    if (!updatedColors[order.id]) {
+                        updatedColors[order.id] = getRandomColor();
+                    }
+                });
+
+                return updatedColors;
             });
-            setOrderColors(colors);
         }
-    }, [orders.length]);
+    }, [orders]);
 
     const removeOrder = (id) => {
         setOrderStatus(id, 2)
