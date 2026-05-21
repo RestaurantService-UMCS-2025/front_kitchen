@@ -6,9 +6,10 @@ import {getRandomColor} from "./ColorRandomizer.jsx";
 let ordersCache = null;
 import * as signalR from '@microsoft/signalr';
 
-function Orders({ selectedTableId, onSelectTable,seenOrders,markAsSeen }) {
+function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen }) {
     const [orders, setOrders] = useState(ordersCache || []);
     const [orderColors, setOrderColors] = useState({});
+
     useEffect(() => {
         if (ordersCache) {
             markAsSeen(ordersCache.map(o => o.id));
@@ -22,6 +23,7 @@ function Orders({ selectedTableId, onSelectTable,seenOrders,markAsSeen }) {
             })
             .catch(error => console.error(error));
     }, []);
+
     useEffect(() => {
         if (orders.length > 0) {
             const colors = {};
@@ -54,6 +56,7 @@ function Orders({ selectedTableId, onSelectTable,seenOrders,markAsSeen }) {
             })
             .catch(error => console.error(error));
     };
+
     useEffect(() => {
         const hubUrl = "http://localhost:5077/ordersHub";
 
@@ -81,57 +84,66 @@ function Orders({ selectedTableId, onSelectTable,seenOrders,markAsSeen }) {
         };
     }, []);
 
+    const sortedOrders = [...orders].sort((a, b) => {
+        const aSeen = seenOrders.has(a.id);
+        const bSeen = seenOrders.has(b.id);
+
+        if (!aSeen && bSeen) return -1;
+        if (aSeen && !bSeen) return 1;
+        return 0;
+    });
+
     return (
         <div>
             <Button buttonText="Odśwież" className="button-refresh" onClick={refreshOrders}>Click</Button>
             <div className="order-wrapper">
-            <div>
-                {orders.map((order) => (
-                    order.items && order.items.length > 0 ? (
-                        <div
-                            key={order.id}
-                            className="order"
-                            onClick={() => {
-                                markAsSeen(order.id);
-                                onSelectTable(selectedTableId === order.tableId ? null : order.tableId);
-                            }}
-                            style={{
-                                fontFamily: "Helvetica",
-                                fontWeight: "normal",
-                                backgroundColor: selectedTableId === order.tableId ? "#ffe066" : orderColors[order.id],
-                                cursor: "pointer",
-                                transition: "background-color 0.2s",
-                            }}
-                        >
-                            {!seenOrders.has(order.id) && (
-                                <div className="order-new-dot" />
-                            )}
-                            <p>Płatność: {order.billAmount} zł</p>
-
-                            {order.items && order.items.length > 0 && (
-                                <ul>
-                                    {order.items.map((item) => (
-                                        <li key={item.orderItemId} style={{display:"flex", justifyContent:"space-between",alignItems:"center",gap:"5px"}}>
-                                            <span>{item.menuItemName}</span>
-                                            <span>  x{item.quantity}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-
-                            <Button
-                                buttonText="Zamówienie zrobione"
-                                className="button-order"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    removeOrder(order.id);
+                <div>
+                    {sortedOrders.map((order) => (
+                        order.items && order.items.length > 0 ? (
+                            <div
+                                key={order.id}
+                                className="order"
+                                onClick={() => {
+                                    markAsSeen(order.id);
+                                    onSelectTable(selectedTableId === order.tableId ? null : order.tableId);
                                 }}
-                            />
-                        </div>
-                    ) : null
-                ))}
+                                style={{
+                                    fontFamily: "Helvetica",
+                                    fontWeight: "normal",
+                                    backgroundColor: selectedTableId === order.tableId ? "#ffe066" : orderColors[order.id],
+                                    cursor: "pointer",
+                                    transition: "background-color 0.2s",
+                                }}
+                            >
+                                {!seenOrders.has(order.id) && (
+                                    <div className="order-new-dot" />
+                                )}
+                                <p>Płatność: {order.billAmount} zł</p>
+
+                                {order.items && order.items.length > 0 && (
+                                    <ul>
+                                        {order.items.map((item) => (
+                                            <li key={item.orderItemId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "5px" }}>
+                                                <span>{item.menuItemName}</span>
+                                                <span>  x{item.quantity}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+
+                                <Button
+                                    buttonText="Zamówienie zrobione"
+                                    className="button-order"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeOrder(order.id);
+                                    }}
+                                />
+                            </div>
+                        ) : null
+                    ))}
+                </div>
             </div>
-        </div>
         </div>
     );
 }
