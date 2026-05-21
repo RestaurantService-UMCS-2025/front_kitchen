@@ -7,6 +7,8 @@ function GeneralComponent() {
     const [selectedTableId, setSelectedTableId] = useState(null);
     const [activeTab, setActiveTab] = useState('orders');
     const [seenOrders, setSeenOrders] = useState(new Set());
+    const [orderColors, setOrderColors] = useState({});
+
 
     const markAsSeen = (id) => {
         if (Array.isArray(id)) {
@@ -39,6 +41,8 @@ function GeneralComponent() {
                         onSelectTable={setSelectedTableId}
                         seenOrders={seenOrders}
                         markAsSeen={markAsSeen}
+                        orderColors={orderColors}
+                        setOrderColors={setOrderColors}
                     />
                     : <ProductList />
                 }
