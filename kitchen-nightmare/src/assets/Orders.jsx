@@ -4,6 +4,7 @@ import { getAllOrders, setOrderStatus } from "../api/ordersApi.jsx";
 import {getRandomColor} from "./ColorRandomizer.jsx";
 
 let ordersCache = null;
+import * as signalR from '@microsoft/signalr';
 
 function Orders({ selectedTableId, onSelectTable,seenOrders,markAsSeen }) {
     const [orders, setOrders] = useState(ordersCache || []);
@@ -53,6 +54,32 @@ function Orders({ selectedTableId, onSelectTable,seenOrders,markAsSeen }) {
             })
             .catch(error => console.error(error));
     };
+    useEffect(() => {
+        const hubUrl = "http://localhost:5077/ordersHub";
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(hubUrl)
+            .withAutomaticReconnect()
+            .build();
+
+        connection.start()
+            .then(() => {
+                console.log("Połączono z SignalR!");
+
+                connection.on("NewOrder", () => {
+                    console.log("Aktualizacja listy zamówień");
+                    refreshOrders();
+                });
+            })
+            .catch(err => console.error("Błąd połączenia z SignalR: ", err));
+
+        return () => {
+            if (connection) {
+                connection.off("NewOrder");
+                connection.stop();
+            }
+        };
+    }, []);
 
     return (
         <div>
