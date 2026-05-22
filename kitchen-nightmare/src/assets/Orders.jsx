@@ -1,14 +1,14 @@
 import Button from './Button';
 import { useState, useEffect } from 'react';
 import { getAllOrders, setOrderStatus } from "../api/ordersApi.jsx";
-import {getRandomColor} from "./ColorRandomizer.jsx";
-
-let ordersCache = null;
+import { getRandomColor } from "./ColorRandomizer.jsx";
+import OrderCard from './OrderCard'; // Import nowego komponentu karty zamówienia
 import * as signalR from '@microsoft/signalr';
 
-function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderColors, setOrderColors}) {
+let ordersCache = null;
+
+function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderColors, setOrderColors }) {
     const [orders, setOrders] = useState(ordersCache || []);
-    //const [orderColors, setOrderColors] = useState({});
 
     useEffect(() => {
         if (ordersCache) {
@@ -28,13 +28,11 @@ function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderC
         if (orders.length > 0) {
             setOrderColors(prevColors => {
                 const updatedColors = { ...prevColors };
-
                 orders.forEach(order => {
                     if (!updatedColors[order.id]) {
                         updatedColors[order.id] = getRandomColor();
                     }
                 });
-
                 return updatedColors;
             });
         }
@@ -74,7 +72,6 @@ function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderC
         connection.start()
             .then(() => {
                 console.log("Połączono z SignalR!");
-
                 connection.on("NewOrder", () => {
                     console.log("Aktualizacja listy zamówień");
                     refreshOrders();
@@ -106,46 +103,16 @@ function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderC
                 <div>
                     {sortedOrders.map((order) => (
                         order.items && order.items.length > 0 ? (
-                            <div
+                            <OrderCard
                                 key={order.id}
-                                className="order"
-                                onClick={() => {
-                                    markAsSeen(order.id);
-                                    onSelectTable(selectedTableId === order.tableId ? null : order.tableId);
-                                }}
-                                style={{
-                                    fontFamily: "Helvetica",
-                                    fontWeight: "normal",
-                                    backgroundColor: selectedTableId === order.tableId ? "#ffe066" : orderColors[order.id],
-                                    cursor: "pointer",
-                                    transition: "background-color 0.2s",
-                                }}
-                            >
-                                {!seenOrders.has(order.id) && (
-                                    <div className="order-new-dot" />
-                                )}
-                                <p>Płatność : {order.billAmount} zł</p>
-
-                                {order.items && order.items.length > 0 && (
-                                    <ul>
-                                        {order.items.map((item) => (
-                                            <li key={item.orderItemId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "5px" }}>
-                                                <span>{item.menuItemName}</span>
-                                                <span>  x{item.quantity}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-
-                                <Button
-                                    buttonText="Zamówienie zrobione"
-                                    className="button-order"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        removeOrder(order.id);
-                                    }}
-                                />
-                            </div>
+                                order={order}
+                                selectedTableId={selectedTableId}
+                                onSelectTable={onSelectTable}
+                                seenOrders={seenOrders}
+                                markAsSeen={markAsSeen}
+                                orderColors={orderColors}
+                                removeOrder={removeOrder}
+                            />
                         ) : null
                     ))}
                 </div>

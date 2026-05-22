@@ -131,8 +131,24 @@
     border-radius: 50%;
     background-color: #ff4444;
     box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.22);
+
+    animation: flash-dot 1.5s infinite ease-in-out;
 }
 
+@keyframes flash-dot {
+    0% {
+        opacity: 0.4;
+        box-shadow: 0 0 0 0px rgba(255, 68, 68, 0.4);
+    }
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 0 6px rgba(255, 68, 68, 0.2);
+    }
+    100% {
+        opacity: 0.4;
+        box-shadow: 0 0 0 0px rgba(255, 68, 68, 0.4);
+    }
+}
 
 .button-order,
 .button-refresh {
