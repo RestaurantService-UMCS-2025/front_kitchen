@@ -124,7 +124,7 @@ function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderC
                                 {!seenOrders.has(order.id) && (
                                     <div className="order-new-dot" />
                                 )}
-                                <p>Płatność: {order.billAmount} zł</p>
+                                <p>Płatność : {order.billAmount} zł</p>
 
                                 {order.items && order.items.length > 0 && (
                                     <ul>
