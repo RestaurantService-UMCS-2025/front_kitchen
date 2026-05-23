@@ -4,7 +4,6 @@ const BASE_URL = 'http://localhost:5077/api/Orders';
 
 export const getAllOrders = async () => {
     let token = getTokenFromCookies()
-    console.log(token)
     const response = await fetch(`${BASE_URL}/orders`, {
         method: "GET",
         headers: {

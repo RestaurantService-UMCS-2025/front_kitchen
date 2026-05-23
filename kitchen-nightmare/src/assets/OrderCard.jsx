@@ -98,7 +98,6 @@ function OrderCard({
                                 fontStyle: "italic",
                                 opacity: 0.9
                             }}>
-                                {/* Usunięto ikonę ostrzeżenia, wyświetlamy samą treść notatki */}
                                 <span>{item.note}</span>
                             </div>
                         )}
