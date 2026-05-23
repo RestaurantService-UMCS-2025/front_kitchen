@@ -7,22 +7,46 @@ import * as signalR from '@microsoft/signalr';
 
 let ordersCache = null;
 
-function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderColors, setOrderColors }) {
+function Orders({ selectedTableId, onSelectTable, orderColors, setOrderColors }) {
     const [orders, setOrders] = useState(ordersCache || []);
-
-    // Nowy stan: przechowuje ID zamówienia, które użytkownik CHCE ukończyć
     const [orderToComplete, setOrderToComplete] = useState(null);
+
+    const [localSeenOrders, setLocalSeenOrders] = useState(() => {
+        const saved = localStorage.getItem("seenOrders");
+        if (saved) {
+            try {
+                const parsedArray = JSON.parse(saved);
+                return new Set(parsedArray);
+            } catch (e) {
+                console.error("Błąd parsowania seenOrders z localStorage", e);
+                return new Set();
+            }
+        }
+        return new Set();
+    });
+
+    useEffect(() => {
+        const arrayToSave = Array.from(localSeenOrders);
+        localStorage.setItem("seenOrders", JSON.stringify(arrayToSave));
+    }, [localSeenOrders]);
+
+    const handleMarkAsSeen = (orderId) => {
+        setLocalSeenOrders(prev => {
+            if (prev.has(orderId)) return prev;
+            const updated = new Set(prev);
+            updated.add(orderId);
+            return updated;
+        });
+    };
 
     useEffect(() => {
         if (ordersCache) {
-            markAsSeen(ordersCache.map(o => o.id));
             return;
         }
         getAllOrders()
             .then(json => {
                 setOrders(json);
                 ordersCache = json;
-                markAsSeen(json.map(o => o.id));
             })
             .catch(error => console.error(error));
     }, []);
@@ -39,7 +63,7 @@ function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderC
                 return updatedColors;
             });
         }
-    }, [orders]);
+    }, [orders, setOrderColors]);
 
     const handleConfirmComplete = () => {
         if (!orderToComplete) return;
@@ -97,12 +121,13 @@ function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderC
     }, []);
 
     const sortedOrders = [...orders].sort((a, b) => {
-        const aSeen = seenOrders.has(a.id);
-        const bSeen = seenOrders.has(b.id);
+        const aSeen = localSeenOrders.has(a.id);
+        const bSeen = localSeenOrders.has(b.id);
 
         if (!aSeen && bSeen) return -1;
         if (aSeen && !bSeen) return 1;
-        return 0;
+
+        return b.id - a.id;
     });
 
     return (
@@ -118,8 +143,8 @@ function Orders({ selectedTableId, onSelectTable, seenOrders, markAsSeen, orderC
                                 order={order}
                                 selectedTableId={selectedTableId}
                                 onSelectTable={onSelectTable}
-                                seenOrders={seenOrders}
-                                markAsSeen={markAsSeen}
+                                seenOrders={localSeenOrders}
+                                markAsSeen={handleMarkAsSeen}
                                 orderColors={orderColors}
                                 removeOrder={(id) => setOrderToComplete(id)}
                             />

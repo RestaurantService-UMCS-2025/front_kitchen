@@ -121,6 +121,7 @@ function TableItem({ table, isSelected, onSelectTable, selectedTableId, onMove, 
 function QrPanel({ tableId, onClose }) {
     const [qrCodeData, setQrCodeData] = useState(null);
     const [loading, setLoading] = useState(false);
+    const qrContainerRef = useRef(null);
 
     useEffect(() => {
         if (!tableId) return;
@@ -137,6 +138,106 @@ function QrPanel({ tableId, onClose }) {
                 setLoading(false);
             });
     }, [tableId]);
+
+    const handlePrintDocument = () => {
+        if (!qrContainerRef.current) return;
+
+        const qrElementHtml = qrContainerRef.current.innerHTML;
+
+        const printWindow = window.open("", "_blank", "width=800,height=900");
+
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Stolik ${tableId} - Kod QR</title>
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: 'Helvetica Neue', Arial, sans-serif;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        background-color: #fff;
+                    }
+                    .print-card {
+                        border: 3px dashed #334155;
+                        border-radius: 24px;
+                        padding: 40px;
+                        text-align: center;
+                        width: 350px;
+                        background: #ffffff;
+                        box-sizing: border-box;
+                    }
+                    .restaurant-name {
+                        font-size: 14px;
+                        text-transform: uppercase;
+                        letter-spacing: 2px;
+                        color: #64748b;
+                        margin: 0 0 10px 0;
+                    }
+                    .title {
+                        font-size: 32px;
+                        font-weight: bold;
+                        color: #0f172a;
+                        margin: 0 0 30px 0;
+                    }
+                    .qr-wrapper {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin: 0 auto 30px auto;
+                    }
+                    .qr-wrapper svg, .qr-wrapper img {
+                        width: 220px !important;
+                        height: 220px !important;
+                    }
+                    .instructions {
+                        font-size: 14px;
+                        color: #475569;
+                        line-height: 1.5;
+                        margin: 0;
+                    }
+                    .footer-notice {
+                        font-size: 11px;
+                        color: #94a3b8;
+                        margin-top: 20px;
+                    }
+                    @media print {
+                        body { height: auto; }
+                        .print-card { border: 3px dashed #000; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="print-card">
+                    <p class="restaurant-name">Restauracja</p>
+                    <h1 class="title">STOLIK ${tableId}</h1>
+                    
+                    <div class="qr-wrapper">
+                        ${qrElementHtml}
+                    </div>
+                    
+                    <p class="instructions">
+                        Zeskanuj kod aparatem telefonu,<br>
+                        aby przeglądać menu i złożyć zamówienie.
+                    </p>
+                    <div class="footer-notice"></div>
+                </div>
+
+                <script>
+                    window.onload = function() {
+                        window.print();
+                    };
+                </script>
+            </body>
+            </html>
+        `);
+
+        printWindow.document.close();
+    };
 
     return (
         <div style={{
@@ -174,12 +275,32 @@ function QrPanel({ tableId, onClose }) {
             {loading ? (
                 <p>Ładowanie kodu...</p>
             ) : qrCodeData ? (
-                <QrCodeRenderer qrData={qrCodeData} />
+                <div ref={qrContainerRef}>
+                    <QrCodeRenderer qrData={qrCodeData} />
+                </div>
             ) : (
                 <p style={{ color: "red" }}>Błąd pobierania kodu</p>
             )}
-            <p style={{ fontSize: "12px", marginTop: "10px", color: "#66px" }}>
-                Zeskanuj, aby otworzyć menu
+
+            <p style={{ fontSize: "12px", marginTop: "15px", color: "#666" }}>
+                <button
+                    className="cancel-drag"
+                    onClick={handlePrintDocument}
+                    disabled={!qrCodeData}
+                    style={{
+                        padding: "8px 12px",
+                        backgroundColor: "#1e293b",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontWeight: "bold",
+                        width: "100%",
+                        opacity: qrCodeData ? 1 : 0.5
+                    }}
+                >
+                    Pokaż jako dokument PDF / Druk
+                </button>
             </p>
         </div>
     );
@@ -188,7 +309,6 @@ function QrPanel({ tableId, onClose }) {
 function RestaurantLayout({ selectedTableId, onSelectTable }) {
     const [activeQrTableId, setActiveQrTableId] = useState(null);
 
-    // Nowy stan: przechowuje ID stolika wybranego do usunięcia (w celu otwarcia modala)
     const [tableToDelete, setTableToDelete] = useState(null);
 
     const [tables, setTables] = useState(() => {
@@ -272,7 +392,7 @@ function RestaurantLayout({ selectedTableId, onSelectTable }) {
                         selectedTableId={selectedTableId}
                         onMove={updateTablePosition}
                         onShowQr={(id) => setActiveQrTableId(id)}
-                        onDeleteClick={(id) => setTableToDelete(id)} // Otwarcie modala usunięcia
+                        onDeleteClick={(id) => setTableToDelete(id)}
                     />
                 ))}
             </div>
@@ -284,7 +404,6 @@ function RestaurantLayout({ selectedTableId, onSelectTable }) {
                 />
             )}
 
-            {/* MODALNE OKIENKO POTWIERDZENIA USUNIĘCIA STOLIKA */}
             {tableToDelete && (
                 <div style={{
                     position: "fixed",
@@ -319,7 +438,7 @@ function RestaurantLayout({ selectedTableId, onSelectTable }) {
 
                         <div style={{ display: "flex", justifyContent: "center", gap: "12px" }}>
                             <button
-                                onClick={() => setTableToDelete(null)} // Anulowanie akcji
+                                onClick={() => setTableToDelete(null)}
                                 style={{
                                     padding: "8px 16px",
                                     border: "1px solid #cbd5e1",
