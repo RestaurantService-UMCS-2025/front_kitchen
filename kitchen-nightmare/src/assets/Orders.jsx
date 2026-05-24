@@ -98,7 +98,7 @@ function Orders({ selectedTableId, onSelectTable, orderColors, setOrderColors })
     };
 
     useEffect(() => {
-        const hubUrl = "http://localhost:5077/ordersHub";
+        const hubUrl = "http://20.100.201.238:8080/ordersHub";
 
         const connection = new signalR.HubConnectionBuilder()
             .withUrl(hubUrl)

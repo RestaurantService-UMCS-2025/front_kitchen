@@ -1,6 +1,6 @@
 import {getTokenFromCookies} from "./loginApi.jsx";
 
-const BASE_URL = 'http://localhost:5077/api/Menu';
+const BASE_URL = 'http://20.100.201.238:8080/api/Menu';
 
 export const getAllProducts = async () => {
     const response = await fetch(`${BASE_URL}/all`);

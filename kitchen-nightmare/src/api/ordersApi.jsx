@@ -1,6 +1,6 @@
 import {getTokenFromCookies} from "./loginApi.jsx";
 
-const BASE_URL = 'http://localhost:5077/api/Orders';
+const BASE_URL = 'http://20.100.201.238:8080/api/Orders';
 
 export const getAllOrders = async () => {
     let token = getTokenFromCookies()

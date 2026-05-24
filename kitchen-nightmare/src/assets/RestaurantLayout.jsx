@@ -8,7 +8,7 @@ import {getTokenFromCookies} from "../api/loginApi.jsx";
 
 const deleteTableApi = async (id) => {
     let token = getTokenFromCookies();
-    const response = await fetch(`http://localhost:5077/api/Tables/${id}/remove`,
+    const response = await fetch(`http://20.100.201.238:8080/api/Tables/${id}/remove`,
         { method: "PATCH", headers: {
             "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
@@ -127,7 +127,7 @@ function QrPanel({ tableId, onClose }) {
         if (!tableId) return;
 
         setLoading(true);
-        fetch(`http://localhost:5077/api/tables/${tableId}/qrcode`)
+        fetch(`http://20.100.201.238:8080/api/tables/${tableId}/qrcode`)
             .then(res => res.json())
             .then(data => {
                 setQrCodeData(data);

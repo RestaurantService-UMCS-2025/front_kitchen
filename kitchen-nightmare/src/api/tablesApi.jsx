@@ -1,7 +1,7 @@
 
 import {getTokenFromCookies} from "./loginApi.jsx";
 
-const BASE_URL = 'http://localhost:5077/api/Tables';
+const BASE_URL = 'http://20.100.201.238:8080/api/Tables';
 
 export const addTableApi = async (id, tableInfo) => {
     let token = getTokenFromCookies();
