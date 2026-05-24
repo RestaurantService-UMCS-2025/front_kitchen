@@ -2,29 +2,29 @@ import {useEffect, useState} from 'react';
 import {getAllProducts, setProductAvailable} from "../api/productsApi.jsx";
 import Button from "./Button.jsx";
 
-let productsCache = null;
+export let availableProducts = null;
 function ProductList() {
-    const [products, setProducts] = useState(productsCache || []);
+    const [products, setProducts] = useState(availableProducts || []);
 
     useEffect(() => {
-        if (productsCache) {
+        if (availableProducts) {
             return;
         }
         getAllProducts()
             .then(json => {
                 setProducts(json)
-                productsCache = json
+                availableProducts = json
             })
             .catch(error => console.error(error))
     }, []);
 
     const refreshProducts =() =>  {
-        productsCache = null
+        availableProducts = null
 
         getAllProducts()
             .then(json => {
                 setProducts(json)
-                productsCache = json
+                availableProducts = json
             })
             .catch(error => console.error(error));
     }
@@ -35,7 +35,7 @@ function ProductList() {
                 const updated = prev.map(p =>
                     p.id === id ? { ...p, available: available } : p
                 );
-                productsCache = updated;
+                availableProducts = updated;
                 return updated;
             });
         }).catch(error => console.error(error))

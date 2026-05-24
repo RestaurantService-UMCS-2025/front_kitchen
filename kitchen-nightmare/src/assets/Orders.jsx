@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { getAllOrders, setOrderStatus } from "../api/ordersApi.jsx";
 import { getRandomColor } from "./ColorRandomizer.jsx";
 import OrderCard from './OrderCard';
+import AddOrderModal from './AddOrderModal';
 import * as signalR from '@microsoft/signalr';
 
 let ordersCache = null;
@@ -10,6 +11,8 @@ let ordersCache = null;
 function Orders({ selectedTableId, onSelectTable, orderColors, setOrderColors }) {
     const [orders, setOrders] = useState(ordersCache || []);
     const [orderToComplete, setOrderToComplete] = useState(null);
+
+    const [isAddOrderModalOpen, setIsAddOrderModalOpen] = useState(false);
 
     const [localSeenOrders, setLocalSeenOrders] = useState(() => {
         const saved = localStorage.getItem("seenOrders");
@@ -134,6 +137,11 @@ function Orders({ selectedTableId, onSelectTable, orderColors, setOrderColors })
         <div style={{ position: "relative", minHeight: "100%" }}>
             <Button buttonText="Odśwież" className="button-refresh" onClick={refreshOrders}>Click</Button>
 
+            <Button buttonText="Dodaj zamówienie"
+                    className="button-refresh"
+                    onClick={() => setIsAddOrderModalOpen(true)}>
+            </Button>
+
             <div className="order-wrapper">
                 <div>
                     {sortedOrders.map((order) => (
@@ -154,30 +162,53 @@ function Orders({ selectedTableId, onSelectTable, orderColors, setOrderColors })
             </div>
 
             {orderToComplete && (
-                <div style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    width: "100vw",
-                    height: "100vh",
-                    backgroundColor: "rgba(15, 23, 42, 0.75)",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    zIndex: 10000,
-                    backdropFilter: "blur(4px)"
-                }}>
-                    <div style={{
-                        backgroundColor: "#ffffff",
-                        padding: "30px",
-                        borderRadius: "15px",
-                        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)",
-                        textAlign: "center",
-                        maxWidth: "400px",
-                        width: "90%",
-                        border: "2px solid #f5a623",
-                        boxSizing: "border-box"
-                    }}>
+                <div
+                    onClick={() => setOrderToComplete(null)}
+                    style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundColor: "rgba(15, 23, 42, 0.75)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 10000,
+                        backdropFilter: "blur(4px)"
+                    }}
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                            position: "relative",
+                            backgroundColor: "#ffffff",
+                            padding: "30px",
+                            borderRadius: "15px",
+                            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)",
+                            textAlign: "center",
+                            maxWidth: "400px",
+                            width: "90%",
+                            border: "2px solid #f5a623",
+                            boxSizing: "border-box"
+                        }}
+                    >
+                        <button
+                            onClick={() => setOrderToComplete(null)}
+                            style={{
+                                position: "absolute",
+                                top: "10px",
+                                right: "15px",
+                                background: "none",
+                                border: "none",
+                                fontSize: "18px",
+                                color: "#94a3b8",
+                                cursor: "pointer",
+                                fontWeight: "bold"
+                            }}
+                        >
+                            ×
+                        </button>
                         <h3 style={{ margin: "0 0 10px 0", color: "#1e293b", fontSize: "20px", fontFamily: "Helvetica, Arial" }}>
                             Ukończyć zamówienie?
                         </h3>
@@ -222,6 +253,12 @@ function Orders({ selectedTableId, onSelectTable, orderColors, setOrderColors })
                     </div>
                 </div>
             )}
+
+            <AddOrderModal
+                isOpen={isAddOrderModalOpen}
+                onClose={() => setIsAddOrderModalOpen(false)}
+                onOrderCreated={refreshOrders}
+            />
         </div>
     );
 }

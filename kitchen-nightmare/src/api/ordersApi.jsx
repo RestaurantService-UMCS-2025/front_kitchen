@@ -32,3 +32,36 @@ export const setOrderStatus = async (id, stage) => {
 
     return await response.text();
 };
+export const createOrder = async (tableId, items) => {
+    const orderResponse = await fetch(`${BASE_URL}/order`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ tableId: tableId })
+    });
+
+    if (!orderResponse.ok) {
+        throw new Error(`Błąd tworzenia zamówienia: ${orderResponse.status}`);
+    }
+
+    const responseData = await orderResponse.json();
+    const actualOrderId = typeof responseData === 'object' ? responseData.id : responseData;
+
+    const response = await fetch(`${BASE_URL}/items?orderId=${actualOrderId}`, {
+        method: "POST",
+        headers: {
+            'accept': '*/*',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(items)
+    });
+
+    if (!response.ok) {
+        throw new Error(`Błąd dodawania pozycji: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Dodano pozycje do zamówienia:", data);
+    return data;
+}

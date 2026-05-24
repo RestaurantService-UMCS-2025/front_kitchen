@@ -26,3 +26,19 @@ export const addTableApi = async (id, tableInfo) => {
 
     throw new Error("Serwer zwrócił błąd podczas dodawania stolika.");
 };
+export const getFreeTables = async () => {
+    //let token = getTokenFromCookies();
+
+    const response = await fetch(`${BASE_URL}/allAvailable`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (response.ok) {
+        return response.json();
+    }
+
+    throw new Error("Serwer zwrócił błąd podczas dodawania stolika.");
+}
